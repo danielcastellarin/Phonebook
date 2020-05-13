@@ -43,6 +43,51 @@ void add_record(data_t * dp, record_t rec) {
     }
     dp->list[dp->count++] = rec;
 }
+//FIXME: either delete this or make it so it would make sense to use
+int name_cmp(record_t * r1, record_t * r2) {
+    return strcmp(r1->name, r2->name);
+}
+
+int record_equals(record_t * r1, record_t * r2) {
+    return ((strcmp(r1->name, r2->name) == 0 && strcmp(r1->number, r2->number) == 0 && r1->room == r2->room) ? 1 : 0);
+    /*if(strcmp(r1->name, r2->name) && strcmp(r1->number, r2->number) && r1->room == r2->room)
+        return 1;
+    else
+        return 0;*/
+}
+
+int search_record(data_t * dp, record_t rec) { //checks whole record equality
+    for(int i = 0; i < dp->count; i++) {
+        if(record_equals(&rec, &dp->list[i]))
+            return i;
+    }
+    return -1;
+}
+
+//TODO: either invalidate duplicate names or change search mechanism to accumulate indexes of matches into an array
+int search_name(data_t * dp, char * name) { //checks for first instance of name match
+    for(int i = 0; i < dp->count; i++) {
+        if(strcmp(name, dp->list[i].name) == 0)
+            return i;
+    }
+    return -1;
+}
+
+int search_number(data_t * dp, char * number) { //checks for first instance of number match
+    for(int i = 0; i < dp->count; i++) {
+        if(strcmp(number, dp->list[i].number) == 0)
+            return i;
+    }
+    return -1;
+}
+
+int search_room(data_t * dp, int room) { //checks for first instance of room match
+    for(int i = 0; i < dp->count; i++) {
+        if(room == dp->list[i].room)
+            return i;
+    }
+    return -1;
+}
 
 void print_record(const record_t rec) { //TODO: make print fancy for number
     printf("Name: %s\nNumber: %s\nRoom: %d\n", rec.name, rec.number, rec.room);
@@ -59,11 +104,18 @@ int main() {
     data_t * book = init_data();
 
     add_record(book, create_record("Ronald", "7815458989", 822));
-    //print_record(book->list[0]);
     add_record(book, create_record("Chuck", "8005557832", 167));
     add_record(book, create_record("Betty", "6178091264", 532));
     add_record(book, create_record("Sam", "9702403365", 142));
-    print_all_records(book);
+    //print_all_records(book);
+
+    int id;
+    //id = search_record(book, create_record("Ronald", "7815458989", 822));
+    id = search_room(book, 167);
+    if(id != -1)
+        print_record(book->list[id]);
+    else
+        printf("Invalid\n");
 
     free_data(book);
 
