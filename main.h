@@ -3,9 +3,9 @@
 
 #define INIT_CAP 5
 
-typedef struct record { //TODO: fix number storage, change to long
+typedef struct record {
     char name[21];
-    int number;
+    char number[11];
     int room;
 } record_t;
 
@@ -17,14 +17,15 @@ typedef struct data {
 
 void print_record(record_t rec);
 
-void print_all_records(record_t rec);
+//TODO: sort into alphabetical order or room number prior to printing
+void print_all_records(const data_t * dp);
 
-record_t * search_record(char * name, int number, int room);
+record_t * search_record(char * name, char * number, int room);
 
-record_t create_record(char * name, int number, int room);
+record_t create_record(char * name, char * number, int room);
 
 void add_record(data_t * dp, record_t rec);
-//void add_record(data_t * dp, char * name, int number, int room);
+//void add_record(data_t * dp, char * name, char * number, int room);
 
 record_t edit_record(record_t rec);
 
