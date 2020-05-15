@@ -34,7 +34,7 @@ record_t create_record(char * name, char * number, int room);
 void add_record(data_t * dp, record_t rec);
 //void add_record(data_t * dp, char * name, char * number, int room);
 
-record_t edit_record(record_t rec);
+record_t * edit_record(data_t  * dp, record_t old, record_t new);
 
 record_t delete_record(data_t * dp, record_t rec);
 

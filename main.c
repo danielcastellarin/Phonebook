@@ -90,6 +90,19 @@ int search_room(data_t * dp, int room) { //checks for first instance of room mat
     return -1;
 }
 
+// TODO: probably should expand functionality and move to own file
+record_t * edit_record(data_t  * dp, record_t old, record_t new) {
+    int i = search_record(dp, old);
+    if(i > 0) {
+        strcpy_s(dp->list[i].name, NAME_LEN, new.name);
+        strcpy_s(dp->list[i].number, NUMBER_LEN, new.number);
+        dp->list[i].room = new.room;
+        return &old;
+    } else {
+        return NULL;
+    }
+}
+
 record_t delete_record(data_t * dp, record_t rec) {
     //maybe change return value
     //maybe change to linked list to make deleting easier
@@ -131,8 +144,12 @@ int main() {
     add_record(book, create_record("Sam", "9702403365", 142));
     print_all_records(book);
 
+    edit_record(book, create_record("Chuck", "8005557832", 167), create_record("Chris", "3332224444", 555));
+    print_all_records(book);
+    /* Delete testing
     delete_record(book, create_record("Betty", "6178091264", 532));
     print_all_records(book);
+    */
     /* Search testing
     int id;
     //id = search_record(book, create_record("Ronald", "7815458989", 822));
