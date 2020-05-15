@@ -138,6 +138,53 @@ void print_all_records(const data_t * dp) {
     }
 }
 
+void process(data_t * dp) {
+    printf("Welcome to your digital phonebook!\nHere is what you can do:\n"
+           "1) Add record\n2) Edit record\n3) Delete record\n4) Print records\n"
+           "5) Add records through a file\n6) Export records to a file\n"
+           "7) Help!\n8) PURGE!!\n9) Quit\n\n");
+    char c;
+    int in;
+    do { // FIXME: warnings below
+        printf("Enter the number of the option you wish to execute\n-> ");
+        c = getchar();
+        in = (int)strtol(&c, NULL, 10);
+        // FIXME: allow one letter at a time, give option to go back if user enters wrong option
+        printf("%d", in);
+        switch (in) { // FIXME: add in actual functionality as well as helper functions to keep this terse
+            case 1:
+                printf("type in info of record to add");
+                break;
+            case 2:
+                printf("type in info of record want to change");
+                break;
+            case 3:
+                printf("type in info of record to delete");
+                break;
+            case 4:
+                print_all_records(dp);
+                break;
+            case 5:
+                printf("type in file to use");
+                break;
+            case 6:
+                printf("type in name of file to export to");
+                break;
+            case 7:
+                printf("help info:");
+                break;
+            case 8:
+                printf("Do you really want to purge the system of all records?");
+                break;
+            case 9:
+                printf("Exiting");
+                break;
+            default:
+                printf("invalid input. please review help section for valid commands");
+        }
+    } while(c);
+}
+
 /// The main function of the phonebook. Initializes the phonebook
 /// and initiates the text-based user interface
 ///
