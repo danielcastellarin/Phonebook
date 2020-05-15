@@ -22,9 +22,9 @@ void free_data(data_t * dp) {
 
 record_t create_record(char * name, char * number, int room) {
     record_t rec;
-    if(!strncpy_s(rec.name, 21, name, 21)){
+    if(!strncpy_s(rec.name, NAME_LEN, name, NAME_LEN)){
         //TODO: check if room is valid?
-        if(!strncpy_s(rec.number, 11, number, 11)) {
+        if(!strncpy_s(rec.number, NUMBER_LEN, number, NUMBER_LEN)) {
             rec.room = room;
             return rec;
         }
@@ -43,6 +43,7 @@ void add_record(data_t * dp, record_t rec) {
     }
     dp->list[dp->count++] = rec;
 }
+
 //FIXME: either delete this or make it so it would make sense to use
 int name_cmp(record_t * r1, record_t * r2) {
     return strcmp(r1->name, r2->name);
@@ -89,6 +90,27 @@ int search_room(data_t * dp, int room) { //checks for first instance of room mat
     return -1;
 }
 
+record_t delete_record(data_t * dp, record_t rec) {
+    //maybe change return value
+    //maybe change to linked list to make deleting easier
+    int i = search_record(dp, rec);
+    if(i > 0) {
+        record_t del = dp->list[i];
+        for(; i < dp->count; i++) {
+            if(i+1 == dp->count){
+                strcpy_s(dp->list[i].name, 1, "");
+                strcpy_s(dp->list[i].number, 1, "");
+                dp->list[i].room = 0;
+            } else {
+                dp->list[i] = dp->list[i+1];
+            }
+        }
+        dp->count--;
+        return del;
+    }
+    return (record_t){"","",0};
+}
+
 void print_record(const record_t rec) { //TODO: make print fancy for number
     printf("Name: %s\nNumber: %s\nRoom: %d\n", rec.name, rec.number, rec.room);
 }
@@ -107,8 +129,11 @@ int main() {
     add_record(book, create_record("Chuck", "8005557832", 167));
     add_record(book, create_record("Betty", "6178091264", 532));
     add_record(book, create_record("Sam", "9702403365", 142));
-    //print_all_records(book);
+    print_all_records(book);
 
+    delete_record(book, create_record("Betty", "6178091264", 532));
+    print_all_records(book);
+    /* Search testing
     int id;
     //id = search_record(book, create_record("Ronald", "7815458989", 822));
     id = search_room(book, 167);
@@ -116,6 +141,9 @@ int main() {
         print_record(book->list[id]);
     else
         printf("Invalid\n");
+    */
+
+
 
     free_data(book);
 

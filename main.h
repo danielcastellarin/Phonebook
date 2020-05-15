@@ -2,11 +2,13 @@
 #define PHONEBOOK_MAIN_H
 
 #define INIT_CAP 5
+#define NAME_LEN 21
+#define NUMBER_LEN 11
 
 //TODO: Might change to map structure for quicker traversal, but probably unnecessary
 typedef struct record {
-    char name[21];
-    char number[11];
+    char name[NAME_LEN];
+    char number[NUMBER_LEN];
     int room;
 } record_t;
 
