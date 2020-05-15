@@ -1,3 +1,10 @@
+// main.c
+// The primary functionality of the text-based phonebook interface
+//
+// author: Dan Castellarin
+//
+// version control: GitHub repository
+// // // // // // // // // // // // // // // // // // // // // // //
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -44,11 +51,6 @@ void add_record(data_t * dp, record_t rec) {
     dp->list[dp->count++] = rec;
 }
 
-//FIXME: either delete this or make it so it would make sense to use
-int name_cmp(record_t * r1, record_t * r2) {
-    return strcmp(r1->name, r2->name);
-}
-
 int record_equals(record_t * r1, record_t * r2) {
     return ((strcmp(r1->name, r2->name) == 0 && strcmp(r1->number, r2->number) == 0 && r1->room == r2->room) ? 1 : 0);
     /*if(strcmp(r1->name, r2->name) && strcmp(r1->number, r2->number) && r1->room == r2->room)
@@ -91,6 +93,7 @@ int search_room(data_t * dp, int room) { //checks for first instance of room mat
 }
 
 // TODO: probably should expand functionality and move to own file
+// TODO: fix return, might be unnecessary
 record_t * edit_record(data_t  * dp, record_t old, record_t new) {
     int i = search_record(dp, old);
     if(i > 0) {
@@ -135,6 +138,10 @@ void print_all_records(const data_t * dp) {
     }
 }
 
+/// The main function of the phonebook. Initializes the phonebook
+/// and initiates the text-based user interface
+///
+/// \return 0 for success, 1 for failure
 int main() {
     data_t * book = init_data();
 
