@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "main.h"
 
@@ -143,6 +144,25 @@ void print_all_records(const data_t * dp) {
     }
 }
 
+void read_input(char * in_type, char * storage, int len, FILE * fp) {
+    char c;
+    char tmp[len];
+    while(1) {
+        printf("%s", in_type);
+        fgets(tmp, len + 2, fp);
+        if(strlen(tmp) > len) { // if given string was too long
+            printf("Please ensure that your entry is %d characters or less.\n", len - 1);
+            if(strlen(tmp) != len + 1) { // if leftover chars are still in stream
+                while ((c = (char) getchar()) != '\n' && c != EOF);
+            }
+        } else { // given string is valid
+            strtok(tmp, "\n");
+            strncpy(storage, tmp, len);
+            break;
+        }
+    }
+}
+
 void process(data_t * dp) {
     printf("Welcome to your digital phonebook!\nHere is what you can do:\n"
            "1) Add record\n2) Edit record\n3) Delete record\n4) Print records\n"
@@ -236,7 +256,19 @@ int main() {
         printf("Invalid\n");
     */
 
-    process(book);
+    //process(book);
+
+    char n[NAME_LEN];
+    char nu[NUMBER_LEN];
+    char r[NUMBER_LEN];
+    read_input("Name: ", n, NAME_LEN, stdin);
+    read_input("Number: ", nu, NUMBER_LEN, stdin);
+    read_input("Room: ", r, NUMBER_LEN, stdin);
+    int ro = (int) strtol(r, NULL, 10);
+    add_record(book, create_record(n, nu, ro));
+    print_all_records(book);
+
+    getchar();
 
     free_data(book);
 

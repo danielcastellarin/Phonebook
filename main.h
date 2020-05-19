@@ -119,4 +119,13 @@ record_t * edit_record(data_t  * dp, record_t old, record_t new);
 /// \return a copy of the record that was deleted, a blank record if it did not exist
 record_t delete_record(data_t * dp, record_t rec);
 
+/// Processes an individual input from the user.
+/// Will make the user re-enter if the input is too long
+///
+/// \param in_type  a string to print to prompt the user
+/// \param storage  reference to where the input will be stored
+/// \param len      the max length of the input
+/// \param fp       the file to be read
+void read_input(char * in_type, char * storage, int len, FILE * fp);
+
 #endif
