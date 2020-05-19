@@ -2,8 +2,8 @@
 #define PHONEBOOK_MAIN_H
 
 #define INIT_CAP 5
-#define NAME_LEN 21
-#define NUMBER_LEN 11
+#define NAME_LEN 23
+#define NUMBER_LEN 13
 
 //TODO: Might change to map structure for quicker traversal, but probably unnecessary
 

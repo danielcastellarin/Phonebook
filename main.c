@@ -29,9 +29,10 @@ void free_data(data_t * dp) {
 
 record_t create_record(char * name, char * number, int room) {
     record_t rec;
-    if(!strncpy_s(rec.name, NAME_LEN, name, NAME_LEN)){
+    if(strncpy(rec.name, name, NAME_LEN)){
+//    if(!strncpy_s(rec.name, NAME_LEN, name, NAME_LEN)){
         //TODO: check if room is valid?
-        if(!strncpy_s(rec.number, NUMBER_LEN, number, NUMBER_LEN)) {
+        if(strncpy(rec.number, number, NUMBER_LEN)) {
             rec.room = room;
             return rec;
         }
@@ -97,8 +98,10 @@ int search_room(data_t * dp, int room) { //checks for first instance of room mat
 record_t * edit_record(data_t  * dp, record_t old, record_t new) {
     int i = search_record(dp, old);
     if(i > 0) {
-        strcpy_s(dp->list[i].name, NAME_LEN, new.name);
-        strcpy_s(dp->list[i].number, NUMBER_LEN, new.number);
+//        strcpy_s(dp->list[i].name, NAME_LEN, new.name);
+//        strcpy_s(dp->list[i].number, NUMBER_LEN, new.number);
+        strncpy(dp->list[i].name, new.name, NAME_LEN);
+        strncpy(dp->list[i].number, new.number, NUMBER_LEN);
         dp->list[i].room = new.room;
         return &old;
     } else {
@@ -114,8 +117,10 @@ record_t delete_record(data_t * dp, record_t rec) {
         record_t del = dp->list[i];
         for(; i < dp->count; i++) {
             if(i+1 == dp->count){
-                strcpy_s(dp->list[i].name, 1, "");
-                strcpy_s(dp->list[i].number, 1, "");
+//                strcpy_s(dp->list[i].name, 1, "");
+//                strcpy_s(dp->list[i].number, 1, "");
+                strncpy(dp->list[i].name, "", 1);
+                strncpy(dp->list[i].number, "", 1);
                 dp->list[i].room = 0;
             } else {
                 dp->list[i] = dp->list[i+1];
@@ -145,15 +150,31 @@ void process(data_t * dp) {
            "7) Help!\n8) PURGE!!\n9) Quit\n\n");
     char c;
     int in;
+    char name_in[NAME_LEN];
+    char number_in[NUMBER_LEN];
+    char room_in[NUMBER_LEN];
+    int room = 0;
     do { // FIXME: warnings below
         printf("Enter the number of the option you wish to execute\n-> ");
         c = getchar();
         in = (int)strtol(&c, NULL, 10);
+//        while ((c = getchar()) != '\n' && c != EOF);
+        while (getchar() != '\n');
         // FIXME: allow one letter at a time, give option to go back if user enters wrong option
-        printf("%d", in);
         switch (in) { // FIXME: add in actual functionality as well as helper functions to keep this terse
             case 1:
-                printf("type in info of record to add");
+                printf("Type in the info of the record to add:\n");
+                printf("Name: ");
+                fgets(name_in, NAME_LEN, stdin);
+
+                printf("Number: ");
+                fgets(number_in, NUMBER_LEN, stdin);
+
+                printf("Room: ");
+                fgets( room_in, NUMBER_LEN, stdin );
+                room = strtol(room_in, NULL, 10);
+
+                add_record(dp, create_record(name_in, number_in, room));
                 break;
             case 2:
                 printf("type in info of record want to change");
@@ -178,7 +199,7 @@ void process(data_t * dp) {
                 break;
             case 9:
                 printf("Exiting");
-                break;
+                return;
             default:
                 printf("invalid input. please review help section for valid commands");
         }
@@ -191,7 +212,7 @@ void process(data_t * dp) {
 /// \return 0 for success, 1 for failure
 int main() {
     data_t * book = init_data();
-
+    /*
     add_record(book, create_record("Ronald", "7815458989", 822));
     add_record(book, create_record("Chuck", "8005557832", 167));
     add_record(book, create_record("Betty", "6178091264", 532));
@@ -199,7 +220,8 @@ int main() {
     print_all_records(book);
 
     edit_record(book, create_record("Chuck", "8005557832", 167), create_record("Chris", "3332224444", 555));
-    print_all_records(book);
+    print_all_records(book);*/
+
     /* Delete testing
     delete_record(book, create_record("Betty", "6178091264", 532));
     print_all_records(book);
@@ -214,7 +236,7 @@ int main() {
         printf("Invalid\n");
     */
 
-
+    process(book);
 
     free_data(book);
 
