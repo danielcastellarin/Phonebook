@@ -176,52 +176,47 @@ void process(data_t * dp) {
     int room = 0;
     do { // FIXME: warnings below
         printf("Enter the number of the option you wish to execute\n-> ");
-        c = getchar();
-        in = (int)strtol(&c, NULL, 10);
+        c = (char) getchar();
+        in = (int) strtol(&c, NULL, 10);
 //        while ((c = getchar()) != '\n' && c != EOF);
         while (getchar() != '\n');
         // FIXME: allow one letter at a time, give option to go back if user enters wrong option
         switch (in) { // FIXME: add in actual functionality as well as helper functions to keep this terse
-            case 1:
+            case 1: // Add record
                 printf("Type in the info of the record to add:\n");
-                printf("Name: ");
-                fgets(name_in, NAME_LEN, stdin);
-
-                printf("Number: ");
-                fgets(number_in, NUMBER_LEN, stdin);
-
-                printf("Room: ");
-                fgets( room_in, NUMBER_LEN, stdin );
+                read_input("Name: ", name_in, NAME_LEN, stdin);
+                read_input("Number: ", number_in, NUMBER_LEN, stdin);
+                read_input("Room: ", room_in, NUMBER_LEN, stdin);
                 room = strtol(room_in, NULL, 10);
 
                 add_record(dp, create_record(name_in, number_in, room));
                 break;
-            case 2:
+            case 2: // Edit record
                 printf("type in info of record want to change");
                 break;
-            case 3:
+            case 3: // Delete record
                 printf("type in info of record to delete");
                 break;
-            case 4:
+            case 4: // Print records
                 print_all_records(dp);
                 break;
-            case 5:
+            case 5: // Add records through a file
                 printf("type in file to use");
                 break;
-            case 6:
+            case 6: // Export records to a file
                 printf("type in name of file to export to");
                 break;
-            case 7:
+            case 7: // help information
                 printf("help info:");
                 break;
-            case 8:
+            case 8: // The Purge(TM)
                 printf("Do you really want to purge the system of all records?");
                 break;
-            case 9:
+            case 9: // Quit
                 printf("Exiting");
                 return;
             default:
-                printf("invalid input. please review help section for valid commands");
+                printf("Invalid input. please review help section for valid commands");
         }
     } while(c);
 }
@@ -256,19 +251,7 @@ int main() {
         printf("Invalid\n");
     */
 
-    //process(book);
-
-    char n[NAME_LEN];
-    char nu[NUMBER_LEN];
-    char r[NUMBER_LEN];
-    read_input("Name: ", n, NAME_LEN, stdin);
-    read_input("Number: ", nu, NUMBER_LEN, stdin);
-    read_input("Room: ", r, NUMBER_LEN, stdin);
-    int ro = (int) strtol(r, NULL, 10);
-    add_record(book, create_record(n, nu, ro));
-    print_all_records(book);
-
-    getchar();
+    process(book);
 
     free_data(book);
 
