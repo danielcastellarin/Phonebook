@@ -91,6 +91,14 @@ int record_equals(record_t * r1, record_t * r2);
 /// \return the newly created record
 record_t create_record(char * name, char * number, int room);
 
+/// Changes the name, number, and room of a record
+///
+/// \param dp   the pointer to the phonebook holding the record
+/// \param i    the index of the record to be modified
+/// \param new  the record after modification
+//record_t * edit_record(data_t  * dp, record_t old, record_t new);
+void set_record(data_t  * dp, int i, record_t new);
+
 /// Appends a record to a phonebook. If the phonebook can't fit the record,
 /// it will reallocate to make room.
 ///
@@ -105,10 +113,11 @@ void add_record(data_t * dp, record_t rec);
 /// Changes the name, number, and room of a record
 ///
 /// \param dp   the pointer to the phonebook holding the record
-/// \param old  the record prior to being modified
+/// \param i    the index of the record to be modified
 /// \param new  the record after modification
-/// \return a pointer to the original record
-record_t * edit_record(data_t  * dp, record_t old, record_t new);
+/// \return a copy of the original record
+//record_t * edit_record(data_t * dp, record_t old, record_t new);
+record_t edit_record(data_t * dp, int i, char * name, char * number, char * room);
 
 // TODO: more detail below. Might need to change once return is finalized
 

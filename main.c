@@ -42,6 +42,12 @@ record_t create_record(char * name, char * number, int room) {
     //TODO: handle return here
 }
 
+void set_record(data_t  * dp, int i, record_t new) {
+    strncpy(dp->list[i].name, new.name, NAME_LEN);
+    strncpy(dp->list[i].number, new.number, NUMBER_LEN);
+    dp->list[i].room = new.room;
+}
+
 void add_record(data_t * dp, record_t rec) {
     if(dp->count == dp->capacity) {
         record_t * tmp = (record_t *) realloc(dp->list, sizeof(record_t) * dp->capacity * 2);
@@ -96,18 +102,17 @@ int search_room(data_t * dp, int room) { //checks for first instance of room mat
 
 // TODO: probably should expand functionality and move to own file
 // TODO: fix return, might be unnecessary
-record_t * edit_record(data_t  * dp, record_t old, record_t new) {
-    int i = search_record(dp, old);
-    if(i > 0) {
-//        strcpy_s(dp->list[i].name, NAME_LEN, new.name);
-//        strcpy_s(dp->list[i].number, NUMBER_LEN, new.number);
-        strncpy(dp->list[i].name, new.name, NAME_LEN);
-        strncpy(dp->list[i].number, new.number, NUMBER_LEN);
-        dp->list[i].room = new.room;
-        return &old;
-    } else {
-        return NULL;
-    }
+record_t edit_record(data_t  * dp, int i, char * name, char * number, char * room) {
+    record_t old = dp->list[i];
+    printf("Here is the record you have selected:\n");
+    print_record(old);
+    printf("Enter the new data for the record:\n");
+    read_input("Name: ", name, NAME_LEN, stdin);
+    read_input("Number: ", number, NUMBER_LEN, stdin);
+    read_input("Room: ", room, NUMBER_LEN, stdin);
+    int ro = (int) strtol(room, NULL, 10);
+    set_record(dp, i, create_record(name, number, ro));
+    return old;
 }
 
 //record_t delete_record(data_t * dp, record_t rec) {
@@ -118,8 +123,6 @@ record_t * edit_record(data_t  * dp, record_t old, record_t new) {
 //        record_t del = dp->list[i];
 //        for(; i < dp->count; i++) {
 //            if(i+1 == dp->count){
-////                strcpy_s(dp->list[i].name, 1, "");
-////                strcpy_s(dp->list[i].number, 1, "");
 //                strncpy(dp->list[i].name, "", 1);
 //                strncpy(dp->list[i].number, "", 1);
 //                dp->list[i].room = 0;
@@ -210,8 +213,43 @@ void process(data_t * dp) {
 
                 add_record(dp, create_record(name_in, number_in, room));
                 break;
-            case 2: // Edit record
-                printf("type in info of record want to change");
+            case 2: // Edit record TODO: break up into methods
+                printf("How would you like to identify the record?\n1: Name\n2: Number\n3: Room\n-> ");
+                c = (char) getchar();
+                in = (int) strtol(&c, NULL, 10);
+                while (getchar() != '\n');
+                switch (in) {
+                    case 1: // TODO: loop if input does not exist, also check if data is empty
+                        printf("Enter the name of the record you wish to edit:\n");
+                        read_input("Name: ", name_in, NAME_LEN, stdin);
+                        if((index = search_name(dp, name_in)) >= 0) {
+                            edit_record(dp, index, name_in, number_in, room_in);
+                        } else {
+                            printf("No record with name \"%s\" exists in this phonebook.\n", name_in);
+                        }
+                        break;
+                    case 2:
+                        printf("Enter the number of the record you wish to edit:\n");
+                        read_input("Number: ", number_in, NUMBER_LEN, stdin);
+                        if((index = search_number(dp, number_in)) >= 0) {
+                            edit_record(dp, index, name_in, number_in, room_in);
+                        } else {
+                            printf("No record with number \"%s\" exists in this phonebook.\n", number_in);
+                        }
+                        break;
+                    case 3:
+                        printf("Enter the room of the record you wish to edit:\n");
+                        read_input("Room: ", room_in, NUMBER_LEN, stdin);
+                        room = (int) strtol(room_in, NULL, 10);
+                        if((index = search_room(dp, room)) >= 0) {
+                            edit_record(dp, index, name_in, number_in, room_in);
+                        } else {
+                            printf("No record with room \"%d\" exists in this phonebook.\n", room);
+                        }
+                        break;
+                    default:
+                        printf("Invalid input. Please return to the edit menu and enter valid input.");
+                }
                 break;
             case 3: // Delete record
                 printf("How would you like to identify the record?\n1: Name\n2: Number\n3: Room\n-> ");
@@ -240,7 +278,7 @@ void process(data_t * dp) {
                         }
                         break;
                     case 3:
-                        printf("Enter the number of the record you wish to delete:\n");
+                        printf("Enter the room of the record you wish to delete:\n");
                         read_input("Room: ", room_in, NUMBER_LEN, stdin);
                         room = (int) strtol(room_in, NULL, 10);
                         if((index = search_room(dp, room)) >= 0) {
