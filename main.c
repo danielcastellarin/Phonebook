@@ -183,11 +183,12 @@ void read_input(char * in_type, char * storage, int len, FILE * fp) {
 }
 
 void process(data_t * dp) {
-    printf("Welcome to your digital phonebook!\nHere is what you can do:\n"
+    /*printf("Welcome to your digital phonebook!\nHere is what you can do:\n"
            "1) Add record\n2) Edit record\n3) Delete record\n4) Print records\n"
            "5) Add records through a file\n6) Export records to a file\n"
-           "7) Help!\n8) PURGE!!\n9) Quit\n\n");
-    char c;
+           "7) Help!\n8) PURGE!!\n9) Quit\n\n");*/
+    printf("Welcome to your digital phonebook!\n");
+    char c = 0;
     int in;
     char type_in[NUMBER_LEN];       ///< storage for type of input
     char name_in[NAME_LEN];         ///< storage for name
@@ -196,6 +197,11 @@ void process(data_t * dp) {
     int room = 0;
     int index = 0;
     do { // FIXME: warnings below
+        if(c != '7'){
+            printf("\nHere is what you can do:\n1) Add record\n2) Edit record\n"
+                   "3) Delete record\n4) Print records\n5) Add records through a file\n"
+                   "6) Export records to a file\n7) Help!\n8) PURGE!!\n9) Quit\n\n");
+        }
         printf("Enter the number of the option you wish to execute\n-> ");
         c = (char) getchar();
         in = (int) strtol(&c, NULL, 10);
@@ -252,8 +258,8 @@ void process(data_t * dp) {
                 break;
             case 3: // Delete record
                 printf("How would you like to identify the record?\n1: Name\n2: Number\n3: Room\n-> ");
-                c = (char) getchar();
-                in = (int) strtol(&c, NULL, 10);
+                char letter = (char) getchar();
+                in = (int) strtol(&letter, NULL, 10);
                 while (getchar() != '\n');
                 switch (in) {
                     case 1: // TODO: loop if input does not exist, also check if data is empty
@@ -301,7 +307,16 @@ void process(data_t * dp) {
                 printf("type in name of file to export to");
                 break;
             case 7: // help information
-                printf("help info:");
+                printf("Help info:\n1) Add record: Choose this option to add a new record to the phonebook\n"
+                       "2) Edit record: Allows you to change the contents of a pre-existing record\n"
+                       "3) Delete record: Use this to remove a record from the phonebook\n"
+                       "4) Print records: Displays every record in the phonebook\n"
+                       "5) Add records through a file: If you want to enter a large number of records at once, "
+                       "use a formatted file and add them to the phonebook using this option\n"
+                       "6) Export records to a file: Use this to store your records externally\n"
+                       "7) Help!: Displays a description of each menu option\n"
+                       "8) PURGE!!: Deletes all the records, so use with caution!\n"
+                       "9) Quit: Exits the program\n\n");
                 break;
             case 8: // The Purge(TM)
                 printf("Do you really want to purge the system of all records? (Y/N)\n");
@@ -332,13 +347,13 @@ void process(data_t * dp) {
 /// \return 0 for success, 1 for failure
 int main() {
     data_t * book = init_data();
-
+    /*
     add_record(book, create_record("Ronald", "7815458989", 822));
     add_record(book, create_record("Chuck", "8005557832", 167));
     add_record(book, create_record("Betty", "6178091264", 532));
     add_record(book, create_record("Sam", "9702403365", 142));
     print_all_records(book);
-/*
+
     edit_record(book, create_record("Chuck", "8005557832", 167), create_record("Chris", "3332224444", 555));
     print_all_records(book);*/
 
