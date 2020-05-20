@@ -112,12 +112,14 @@ record_t * edit_record(data_t  * dp, record_t old, record_t new);
 
 // TODO: more detail below. Might need to change once return is finalized
 
-/// Removes a record from the phonebook.
+/// Removes a record from the phonebook. The record must already exist
+/// for this function to execute
 ///
-/// \param dp   the pointer to the phonebook to be modified
-/// \param rec  the record to be deleted
-/// \return a copy of the record that was deleted, a blank record if it did not exist
-record_t delete_record(data_t * dp, record_t rec);
+/// \param dp  the pointer to the phonebook to be modified
+/// \param i   the index of the record to be deleted
+/// \return a copy of the record that was deleted
+//record_t delete_record(data_t * dp, record_t rec);
+record_t delete_record(data_t * dp, int i);
 
 /// Processes an individual input from the user.
 /// Will make the user re-enter if the input is too long

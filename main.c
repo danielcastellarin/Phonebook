@@ -110,27 +110,44 @@ record_t * edit_record(data_t  * dp, record_t old, record_t new) {
     }
 }
 
-record_t delete_record(data_t * dp, record_t rec) {
+//record_t delete_record(data_t * dp, record_t rec) {
+//    //maybe change return value
+//    //maybe change to linked list to make deleting easier
+//    int i = search_record(dp, rec);
+//    if(i >= 0) {
+//        record_t del = dp->list[i];
+//        for(; i < dp->count; i++) {
+//            if(i+1 == dp->count){
+////                strcpy_s(dp->list[i].name, 1, "");
+////                strcpy_s(dp->list[i].number, 1, "");
+//                strncpy(dp->list[i].name, "", 1);
+//                strncpy(dp->list[i].number, "", 1);
+//                dp->list[i].room = 0;
+//            } else {
+//                dp->list[i] = dp->list[i+1];
+//            }
+//        }
+//        dp->count--;
+//        return del;
+//    }
+//    return (record_t){"","",0};
+//}
+
+record_t delete_record(data_t * dp, int i) {
     //maybe change return value
     //maybe change to linked list to make deleting easier
-    int i = search_record(dp, rec);
-    if(i > 0) {
-        record_t del = dp->list[i];
-        for(; i < dp->count; i++) {
-            if(i+1 == dp->count){
-//                strcpy_s(dp->list[i].name, 1, "");
-//                strcpy_s(dp->list[i].number, 1, "");
-                strncpy(dp->list[i].name, "", 1);
-                strncpy(dp->list[i].number, "", 1);
-                dp->list[i].room = 0;
-            } else {
-                dp->list[i] = dp->list[i+1];
-            }
+    record_t del = dp->list[i];
+    for(; i < dp->count; i++) {
+        if(i+1 == dp->count){
+            strncpy(dp->list[i].name, "", 1);
+            strncpy(dp->list[i].number, "", 1);
+            dp->list[i].room = 0;
+        } else {
+            dp->list[i] = dp->list[i+1];
         }
-        dp->count--;
-        return del;
     }
-    return (record_t){"","",0};
+    dp->count--;
+    return del;
 }
 
 void print_record(const record_t rec) { //TODO: make print fancy for number
@@ -170,10 +187,12 @@ void process(data_t * dp) {
            "7) Help!\n8) PURGE!!\n9) Quit\n\n");
     char c;
     int in;
-    char name_in[NAME_LEN];
-    char number_in[NUMBER_LEN];
-    char room_in[NUMBER_LEN];
+    char type_in[NUMBER_LEN];       ///< storage for type of input
+    char name_in[NAME_LEN];         ///< storage for name
+    char number_in[NUMBER_LEN];     ///< storage for number
+    char room_in[NUMBER_LEN];       ///< storage for room
     int room = 0;
+    int index = 0;
     do { // FIXME: warnings below
         printf("Enter the number of the option you wish to execute\n-> ");
         c = (char) getchar();
@@ -187,7 +206,7 @@ void process(data_t * dp) {
                 read_input("Name: ", name_in, NAME_LEN, stdin);
                 read_input("Number: ", number_in, NUMBER_LEN, stdin);
                 read_input("Room: ", room_in, NUMBER_LEN, stdin);
-                room = strtol(room_in, NULL, 10);
+                room = (int) strtol(room_in, NULL, 10);
 
                 add_record(dp, create_record(name_in, number_in, room));
                 break;
@@ -195,7 +214,45 @@ void process(data_t * dp) {
                 printf("type in info of record want to change");
                 break;
             case 3: // Delete record
-                printf("type in info of record to delete");
+                printf("How would you like to identify the record?\n1: Name\n2: Number\n3: Room\n-> ");
+                c = (char) getchar();
+                in = (int) strtol(&c, NULL, 10);
+                while (getchar() != '\n');
+                switch (in) {
+                    case 1: // TODO: loop if input does not exist, also check if data is empty
+                        printf("Enter the name of the record you wish to delete:\n");
+                        read_input("Name: ", name_in, NAME_LEN, stdin);
+                        if((index = search_name(dp, name_in)) >= 0) {
+//                            delete_record(dp, dp->list[index]);
+                            delete_record(dp, index);
+                        } else {
+                            printf("No record with name \"%s\" exists in this phonebook.\n", name_in);
+                        }
+                        break;
+                    case 2:
+                        printf("Enter the number of the record you wish to delete:\n");
+                        read_input("Number: ", number_in, NUMBER_LEN, stdin);
+                        if((index = search_number(dp, number_in)) >= 0) {
+//                            delete_record(dp, dp->list[index]);
+                            delete_record(dp, index);
+                        } else {
+                            printf("No record with number \"%s\" exists in this phonebook.\n", number_in);
+                        }
+                        break;
+                    case 3:
+                        printf("Enter the number of the record you wish to delete:\n");
+                        read_input("Room: ", room_in, NUMBER_LEN, stdin);
+                        room = (int) strtol(room_in, NULL, 10);
+                        if((index = search_room(dp, room)) >= 0) {
+//                            delete_record(dp, dp->list[index]);
+                            delete_record(dp, index);
+                        } else {
+                            printf("No record with room \"%d\" exists in this phonebook.\n", room);
+                        }
+                        break;
+                    default:
+                        printf("Invalid input. Please return to the delete menu and enter valid input.");
+                }
                 break;
             case 4: // Print records
                 print_all_records(dp);
@@ -227,13 +284,13 @@ void process(data_t * dp) {
 /// \return 0 for success, 1 for failure
 int main() {
     data_t * book = init_data();
-    /*
+
     add_record(book, create_record("Ronald", "7815458989", 822));
     add_record(book, create_record("Chuck", "8005557832", 167));
     add_record(book, create_record("Betty", "6178091264", 532));
     add_record(book, create_record("Sam", "9702403365", 142));
     print_all_records(book);
-
+/*
     edit_record(book, create_record("Chuck", "8005557832", 167), create_record("Chris", "3332224444", 555));
     print_all_records(book);*/
 
