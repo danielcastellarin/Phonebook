@@ -110,11 +110,14 @@ void add_record(data_t * dp, record_t rec);
 // TODO: maybe split this up, checking if record is there should be done externally
 // TODO: maybe if given record does not exist, add it to phonebook
 
-/// Changes the name, number, and room of a record
+/// Executes the procedure for editing a record in the phonebook.
+/// Utilizes set_record to actually change the contents of the record
 ///
-/// \param dp   the pointer to the phonebook holding the record
-/// \param i    the index of the record to be modified
-/// \param new  the record after modification
+/// \param dp      the pointer to the phonebook holding the record
+/// \param i       the index of the record to be modified
+/// \param name    the storage for the new name of the record
+/// \param number  the storage for the new number of the record
+/// \param room    the storage for the new room of the record
 /// \return a copy of the original record
 //record_t * edit_record(data_t * dp, record_t old, record_t new);
 record_t edit_record(data_t * dp, int i, char * name, char * number, char * room);
