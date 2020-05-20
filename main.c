@@ -31,7 +31,6 @@ void free_data(data_t * dp) {
 record_t create_record(char * name, char * number, int room) {
     record_t rec;
     if(strncpy(rec.name, name, NAME_LEN)){
-//    if(!strncpy_s(rec.name, NAME_LEN, name, NAME_LEN)){
         //TODO: check if room is valid?
         if(strncpy(rec.number, number, NUMBER_LEN)) {
             rec.room = room;
@@ -142,8 +141,8 @@ record_t delete_record(data_t * dp, int i) {
     record_t del = dp->list[i];
     for(; i < dp->count; i++) {
         if(i+1 == dp->count){
-            strncpy(dp->list[i].name, "", 1);
-            strncpy(dp->list[i].number, "", 1);
+            strcpy(dp->list[i].name, "");
+            strcpy(dp->list[i].number, "");
             dp->list[i].room = 0;
         } else {
             dp->list[i] = dp->list[i+1];
@@ -305,7 +304,18 @@ void process(data_t * dp) {
                 printf("help info:");
                 break;
             case 8: // The Purge(TM)
-                printf("Do you really want to purge the system of all records?");
+                printf("Do you really want to purge the system of all records? (Y/N)\n");
+                c = (char) getchar();
+                while (getchar() != '\n');
+                if(c == 'Y') {
+                    printf("Nothing will be the same again.\n");
+                    for(int j = dp->count - 1; j >= 0; j--) {
+                        delete_record(dp, j);
+                    }
+                    printf("Purge complete.\n");
+                } else {
+                    printf("Wise decision.\n");
+                }
                 break;
             case 9: // Quit
                 printf("Exiting");
