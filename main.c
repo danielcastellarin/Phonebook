@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 
 #include "main.h"
 
@@ -163,9 +162,33 @@ void print_all_records(const data_t * dp) {
     }
 }
 
+int read_file(FILE * fp, record_t * recs) { // TODO: if bad form, return -1
+    char * buf = NULL;
+    char rec_name[NAME_LEN];
+    char rec_number[NUMBER_LEN];
+    char rec_room[NUMBER_LEN];
+    size_t size = 0;
+    int room;
+    int rec_count = 0;
+
+    while(getline(&buf, &size, fp) > 0) {
+        if(strcmp(buf, "\r\n") == 0) { // if line is empty
+            continue;
+        }
+        // TODO: check if line is bad prior to copying everything over
+        strncpy(rec_name, strtok(buf, " ,\r\n"), NAME_LEN);
+        strncpy(rec_number, strtok(NULL, " ,\r\n"), NUMBER_LEN);
+        strncpy(rec_room, strtok(NULL, " ,\r\n"), NUMBER_LEN);
+        room = (int) strtol(rec_room, NULL, 10);
+        recs[rec_count++] = create_record(rec_name, rec_number, room);
+    }
+    free(buf);
+    return rec_count;
+}
+
 void read_input(char * in_type, char * storage, int len, FILE * fp) {
     char c;
-    char tmp[len];
+    char tmp[len + 2];
     while(1) {
         printf("%s", in_type);
         fgets(tmp, len + 2, fp);
@@ -190,7 +213,11 @@ void process(data_t * dp) {
     printf("Welcome to your digital phonebook!\n");
     char c = 0;
     int in;
-    char type_in[NUMBER_LEN];       ///< storage for type of input
+
+    FILE * fp;
+    char file_buf[60];
+    char file_in[NAME_LEN];       ///< storage for filename
+
     char name_in[NAME_LEN];         ///< storage for name
     char number_in[NUMBER_LEN];     ///< storage for number
     char room_in[NUMBER_LEN];       ///< storage for room
@@ -300,8 +327,21 @@ void process(data_t * dp) {
             case 4: // Print records
                 print_all_records(dp);
                 break;
-            case 5: // Add records through a file
-                printf("type in file to use");
+            case 5: // Add records through a file FIXME: EXTREMELY UNSAFE
+                printf("Enter the file you wish to use:\n");
+                read_input("File: ", file_in, NAME_LEN, stdin);
+                snprintf(file_buf, NAME_LEN + 3, "../%s", file_in);
+                fp = fopen(file_buf, "r");
+                if(!fp) {
+                    perror(file_in);
+                    break;
+                }
+                record_t file_recs[30];
+                int size = read_file(fp, file_recs);
+                for(int j = 0; j < size; j++) {
+                    add_record(dp, file_recs[j]);
+                }
+                fclose(fp);
                 break;
             case 6: // Export records to a file
                 printf("type in name of file to export to");
@@ -345,7 +385,7 @@ void process(data_t * dp) {
 /// and initiates the text-based user interface
 ///
 /// \return 0 for success, 1 for failure
-int main() {
+int main(void) {
     data_t * book = init_data();
     /*
     add_record(book, create_record("Ronald", "7815458989", 822));

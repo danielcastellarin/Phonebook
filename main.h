@@ -142,4 +142,12 @@ record_t delete_record(data_t * dp, int i);
 /// \param fp       the file to be read
 void read_input(char * in_type, char * storage, int len, FILE * fp);
 
+/// Processes a file line-by-line, parsing it so its contents can be stored
+/// in a list of records that will later be added to the phonebook.
+///
+/// \param fp    the file being read
+/// \param recs  the list of records used as storage after reading each line
+/// \return the size of the list of records created after reading the file
+int read_file(FILE * fp, record_t * recs);
+
 #endif
