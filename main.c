@@ -280,7 +280,7 @@ void process(data_t * dp) {
                         }
                         break;
                     default:
-                        printf("Invalid input. Please return to the edit menu and enter valid input.");
+                        printf("Invalid input. Please return to the edit menu and enter valid input.\n");
                 }
                 break;
             case 3: // Delete record
@@ -321,7 +321,7 @@ void process(data_t * dp) {
                         }
                         break;
                     default:
-                        printf("Invalid input. Please return to the delete menu and enter valid input.");
+                        printf("Invalid input. Please return to the delete menu and enter valid input.\n");
                 }
                 break;
             case 4: // Print records
@@ -344,7 +344,21 @@ void process(data_t * dp) {
                 fclose(fp);
                 break;
             case 6: // Export records to a file
-                printf("type in name of file to export to");
+                printf("Enter the name of the file you wish to create:\n");
+                read_input("File: ", file_in, NAME_LEN, stdin);
+                snprintf(file_buf, NAME_LEN + 3, "../%s", file_in);
+                fp = fopen(file_buf, "r");
+                if(!fp){
+                    fp = fopen(file_buf, "w");
+                    for(int i = 0; i < dp->count; i++) {
+                        fprintf(fp, "%s, %s, %d\n", dp->list[i].name, dp->list[i].number, dp->list[i].room);
+                    }
+                    printf("Done\n");
+                } else {
+                    fclose(fp);
+                    printf("You have chosen the name of a file that already exists. "
+                           "Please re-enter this menu and choose another name.\n");
+                }
                 break;
             case 7: // help information
                 printf("Help info:\n1) Add record: Choose this option to add a new record to the phonebook\n"
